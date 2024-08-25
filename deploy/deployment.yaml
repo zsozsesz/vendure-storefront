@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storefront-deployment
+  labels:
+    app: storefront
+spec:
+  selector:
+    matchLabels:
+      app: storefront
+  replicas: 1
+  template:
+    metadata:
+      name: storefront
+      labels:
+        app: storefront
+    spec:
+      containers:
+        - name: storefront
+          image: registry.digitalocean.com/ecommerce-container-repo-poc/storefront:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VENDURE_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: storefront-config
+                  key: VENDURE_API_URL
+          ports:
+            - containerPort: 3000
